@@ -22,6 +22,9 @@ def load_data():
     return df, minmax_scaler, standard_scaler
 
 df, minmax_scaler, standard_scaler = load_data()
+if df.shape[0] < 80:
+    st.error("❌ Not enough rows in data. Please upload at least 80 rows for reliable forecasting.")
+    st.stop()
 
 tab1, tab2 = st.tabs(["📊 LSTM Forecasting", "⚠️ Risk Forecasting (GARCH)"])
 
