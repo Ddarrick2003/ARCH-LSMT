@@ -48,13 +48,32 @@ if uploaded_file:
         except Exception as e:
             st.error(f"LSTM failed: {e}")
 
-    with tab2:
-        st.subheader("GARCH Risk Forecasting")
-        try:
-            vol_forecast, var_1d = forecast_garch_var(df)
-            st.metric(label="1-Day VaR (95%)", value=f"{var_1d:.2f}%")
-            st.line_chart(vol_forecast.values)
-        except Exception as e:
-            st.error(f"GARCH failed: {e}")
+with tab2:
+    st.subheader("GARCH Risk Forecasting")
+    try:
+        vol_forecast, var_1d = forecast_garch_var(df)
+
+        # Display metrics
+        st.metric(label="1-Day VaR (95%)", value=f"{var_1d:.2f}%")
+        st.line_chart(vol_forecast.values)
+
+        # Explanation block
+        st.markdown("### 🧠 Interpretation of Risk Forecast")
+        st.info(f"""
+        ✅ **Volatility Forecast (Chart)**:
+        - The chart above shows expected volatility over the next {len(vol_forecast)} days.
+        - Sharp spikes suggest periods of **increased uncertainty or market turbulence**.
+        - Stable flat lines indicate a **more predictable market**.
+
+        ✅ **Value at Risk (VaR)**:
+        - The 1-Day Value at Risk (VaR) is estimated at **{abs(var_1d):.2f}%**.
+        - This means: *With 95% confidence, the model expects the portfolio will not lose more than {abs(var_1d):.2f}% in a single day.*
+
+        📌 **Use Case**: Traders, investors, and analysts use this to manage portfolio exposure and set stop-loss levels.
+        """)
+
+    except Exception as e:
+        st.error(f"GARCH failed: {e}")
+
 else:
     st.info("📥 Please upload a CSV to begin.")
